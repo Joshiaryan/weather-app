@@ -15,13 +15,17 @@ const Weather = () => {
     setError('')
     try {
       const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city.trim()}&appid=${API_KEY}&units=metric`
       )
-      if (!res.ok) throw new Error('City not found')
       const data = await res.json()
+      if (!res.ok) {
+        setError(data.message || 'City not found')
+        setWeather(null)
+        return
+      }
       setWeather(data)
     } catch (err) {
-      setError(err.message)
+      setError('Network error. Please try again.')
       setWeather(null)
     } finally {
       setLoading(false)
